@@ -17,10 +17,17 @@ export default function App() {
           scannerRef.current = new Html5Qrcode("reader");
         }
 
-        const config = { 
-          fps: 10, 
-          qrbox: { width: 250, height: 150 },
-          aspectRatio: 1.0,
+        // Calculate responsive qrbox size based on viewport
+        const getQrBoxSize = () => {
+          const width = Math.min(window.innerWidth * 0.8, 500);
+          const height = Math.min(window.innerHeight * 0.4, 300);
+          return { width, height };
+        };
+
+        const config = {
+          fps: 30,
+          qrbox: getQrBoxSize(),
+          aspectRatio: 1.777778, // 16:9 aspect ratio
           formatsToSupport: [
             Html5QrcodeSupportedFormats.UPC_A,
             Html5QrcodeSupportedFormats.UPC_E,
@@ -31,9 +38,14 @@ export default function App() {
             Html5QrcodeSupportedFormats.QR_CODE
           ]
         };
-        
+
         await scannerRef.current.start(
-          { facingMode: "environment" },
+          {
+            facingMode: "environment",
+            advanced: [
+              { zoom: { ideal: 2.0 } }
+            ]
+          },
           config,
           (decodedText) => {
             if (isMounted) {
@@ -118,17 +130,22 @@ export default function App() {
         </div>
 
         {isScanning && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-            <div className="bg-white rounded-2xl overflow-hidden w-full max-w-sm relative shadow-2xl">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm">
+            <div className="bg-white rounded-2xl overflow-hidden w-full max-w-2xl mx-4 relative shadow-2xl">
               <div className="p-4 bg-zinc-900 flex justify-between items-center text-white">
                 <h3 className="font-medium">Scan Barcode</h3>
-                <button onClick={stopScanning} className="text-zinc-400 hover:text-white transition-colors">
+                <button
+                  onClick={stopScanning}
+                  className="text-zinc-400 hover:text-white transition-colors p-1 rounded-lg hover:bg-zinc-800"
+                  aria-label="Close scanner"
+                >
                   <X className="h-6 w-6" />
                 </button>
               </div>
-              <div id="reader" className="w-full bg-black aspect-square overflow-hidden"></div>
-              <div className="p-4 text-center text-sm text-zinc-500 bg-zinc-50">
-                Point your camera at a UPC or QR code
+              <div id="reader" className="w-full bg-black min-h-[400px] overflow-hidden"></div>
+              <div className="p-4 text-center text-sm text-zinc-600 bg-zinc-50">
+                <div className="font-medium mb-1">Position barcode in the highlighted area</div>
+                <div className="text-xs text-zinc-500">Keep steady for best results</div>
               </div>
             </div>
           </div>
