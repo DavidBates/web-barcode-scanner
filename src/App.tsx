@@ -39,22 +39,25 @@ export default function App() {
           ],
         };
 
-        await scannerRef.current.start(
-          {
-            facingMode: "environment",
-            advanced: [{ zoom: { ideal: 2.0 } }],
-          },
-          config,
-          (decodedText) => {
-            if (isMounted) {
-              setUpc(decodedText);
-              stopScanning();
-            }
-          },
-          () => {
-            // Ignore continuous scan errors
-          },
-        );
+        // Try with basic constraints first (more compatible)
+        try {
+          await scannerRef.current.start(
+            { facingMode: "environment" },
+            config,
+            (decodedText) => {
+              if (isMounted) {
+                setUpc(decodedText);
+                stopScanning();
+              }
+            },
+            () => {
+              // Ignore continuous scan errors
+            },
+          );
+        } catch (basicError) {
+          // If even basic constraints fail, report the error
+          throw basicError;
+        }
       } catch (err) {
         console.error("Error starting scanner:", err);
         if (isMounted) {
