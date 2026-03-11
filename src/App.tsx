@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Camera, X, Barcode } from 'lucide-react';
-import { Html5Qrcode, Html5QrcodeSupportedFormats } from 'html5-qrcode';
+import React, { useState, useEffect, useRef } from "react";
+import { Camera, X, Barcode } from "lucide-react";
+import { Html5Qrcode, Html5QrcodeSupportedFormats } from "html5-qrcode";
 
 export default function App() {
-  const [upc, setUpc] = useState('');
+  const [upc, setUpc] = useState("");
   const [isScanning, setIsScanning] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const scannerRef = useRef<Html5Qrcode | null>(null);
 
   useEffect(() => {
@@ -35,16 +35,14 @@ export default function App() {
             Html5QrcodeSupportedFormats.EAN_8,
             Html5QrcodeSupportedFormats.CODE_128,
             Html5QrcodeSupportedFormats.CODE_39,
-            Html5QrcodeSupportedFormats.QR_CODE
-          ]
+            Html5QrcodeSupportedFormats.QR_CODE,
+          ],
         };
 
         await scannerRef.current.start(
           {
             facingMode: "environment",
-            advanced: [
-              { zoom: { ideal: 2.0 } }
-            ]
+            advanced: [{ zoom: { ideal: 2.0 } }],
           },
           config,
           (decodedText) => {
@@ -55,19 +53,21 @@ export default function App() {
           },
           () => {
             // Ignore continuous scan errors
-          }
+          },
         );
       } catch (err) {
         console.error("Error starting scanner:", err);
         if (isMounted) {
-          setError("Could not start camera. Please ensure you have granted camera permissions.");
+          setError(
+            "Could not start camera. Please ensure you have granted camera permissions.",
+          );
           setIsScanning(false);
         }
       }
     };
 
     if (isScanning) {
-      setError('');
+      setError("");
       startScanner();
     }
 
@@ -81,9 +81,12 @@ export default function App() {
 
   const stopScanning = () => {
     if (scannerRef.current && scannerRef.current.isScanning) {
-      scannerRef.current.stop().then(() => {
-        setIsScanning(false);
-      }).catch(console.error);
+      scannerRef.current
+        .stop()
+        .then(() => {
+          setIsScanning(false);
+        })
+        .catch(console.error);
     } else {
       setIsScanning(false);
     }
@@ -98,7 +101,7 @@ export default function App() {
           </div>
           <h1 className="text-2xl font-semibold text-zinc-800">Scanner</h1>
         </div>
-        
+
         {error && (
           <div className="mb-4 p-3 bg-red-50 text-red-700 text-sm rounded-lg border border-red-100">
             {error}
@@ -106,7 +109,10 @@ export default function App() {
         )}
 
         <div className="relative mb-6">
-          <label htmlFor="upc" className="block text-sm font-medium text-zinc-700 mb-2">
+          <label
+            htmlFor="upc"
+            className="block text-sm font-medium text-zinc-700 mb-2"
+          >
             Product UPC / QR
           </label>
           <div className="flex rounded-xl shadow-sm ring-1 ring-inset ring-zinc-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600">
@@ -142,10 +148,17 @@ export default function App() {
                   <X className="h-6 w-6" />
                 </button>
               </div>
-              <div id="reader" className="w-full bg-black min-h-[400px] overflow-hidden"></div>
+              <div
+                id="reader"
+                className="w-full bg-black min-h-[400px] overflow-hidden"
+              ></div>
               <div className="p-4 text-center text-sm text-zinc-600 bg-zinc-50">
-                <div className="font-medium mb-1">Position barcode in the highlighted area</div>
-                <div className="text-xs text-zinc-500">Keep steady for best results</div>
+                <div className="font-medium mb-1">
+                  Position barcode in the highlighted area
+                </div>
+                <div className="text-xs text-zinc-500">
+                  Keep steady for best results
+                </div>
               </div>
             </div>
           </div>
