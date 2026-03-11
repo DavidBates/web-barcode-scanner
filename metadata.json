@@ -1,0 +1,5 @@
+{
+  "name": "Web Barcode Scanner",
+  "description": "A simple web app to scan UPC/QR codes using the device camera.",
+  "requestFramePermissions": ["camera"]
+}
