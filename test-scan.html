@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="node_modules/html5-qrcode/html5-qrcode.min.js"></script>
+</head>
+<body>
+    <input type="file" id="fileInput" accept="image/*">
+    <div id="result"></div>
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        fileInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                try {
+                    const html5QrCode = new Html5Qrcode("reader", {
+                        formatsToSupport: [
+                            Html5QrcodeSupportedFormats.CODE_128,
+                            Html5QrcodeSupportedFormats.CODE_39,
+                            Html5QrcodeSupportedFormats.EAN_13,
+                            Html5QrcodeSupportedFormats.UPC_A,
+                        ]
+                    });
+                    const result = await html5QrCode.scanFile(file, true);
+                    document.getElementById('result').innerText = 'Result: ' + result;
+                } catch (err) {
+                    document.getElementById('result').innerText = 'Error: ' + err.message;
+                    console.error(err);
+                }
+            }
+        });
+    </script>
+    <div id="reader"></div>
+</body>
+</html>
