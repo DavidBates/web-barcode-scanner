@@ -124,17 +124,17 @@ export default function App() {
 
     try {
       setError("");
-      
+
       // Create object URL for preview
       const imageUrl = URL.createObjectURL(file);
       setUploadedImage(imageUrl);
-      
+
       // Stop any ongoing camera scanning first
       if (scannerRef.current?.isScanning) {
         await scannerRef.current.stop();
         setIsScanning(false);
       }
-      
+
       // Create a new scanner instance for file scanning
       const fileScanner = new Html5Qrcode("file-reader", {
         formatsToSupport: [
@@ -159,7 +159,9 @@ export default function App() {
       setError("");
     } catch (err: any) {
       console.error("Error scanning image:", err);
-      setError(`Could not detect a barcode in this image. ${err.message || "Please try another image or ensure the barcode is clear and well-lit."}`);
+      setError(
+        `Could not detect a barcode in this image. ${err.message || "Please try another image or ensure the barcode is clear and well-lit."}`,
+      );
     }
   };
 
@@ -259,9 +261,13 @@ export default function App() {
             className="hidden"
           />
           <div className="flex flex-col items-center space-y-3">
-            <div className={`p-3 rounded-full transition-colors ${
-              isDragging ? "bg-indigo-100 text-indigo-600" : "bg-zinc-200 text-zinc-500"
-            }`}>
+            <div
+              className={`p-3 rounded-full transition-colors ${
+                isDragging
+                  ? "bg-indigo-100 text-indigo-600"
+                  : "bg-zinc-200 text-zinc-500"
+              }`}
+            >
               <Upload className="h-6 w-6" />
             </div>
             <div>
@@ -277,9 +283,15 @@ export default function App() {
 
         {uploadedImage && (
           <div className="mb-6">
-            <div className="text-sm font-medium text-zinc-700 mb-2">Uploaded Image:</div>
+            <div className="text-sm font-medium text-zinc-700 mb-2">
+              Uploaded Image:
+            </div>
             <div className="relative rounded-lg overflow-hidden border border-zinc-200">
-              <img src={uploadedImage} alt="Uploaded barcode" className="w-full h-auto" />
+              <img
+                src={uploadedImage}
+                alt="Uploaded barcode"
+                className="w-full h-auto"
+              />
               <button
                 onClick={() => {
                   setUploadedImage(null);
